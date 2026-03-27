@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Lumen — современный компилируемый язык программирования с гибридной типизацией для обучения школьников. Сочетает скорость C++ и простоту Python. Lumen IDE — мощная среда разработки для Windows 64-bit.">
+    <meta name="keywords" content="Lumen, язык программирования, Lumen IDE, обучение программированию, гибридная типизация, компилируемый язык, PyQt6, умные указатели">
+    <meta name="author" content="Lumen Team">
+    <title>Lumen — язык будущего для обучения | Lumen IDE для Windows</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #1e1e2e;
+            color: #cdd6f4;
+            line-height: 1.5;
+            scroll-behavior: smooth;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Арабский орнамент на заднем фоне */
+        .arabesque-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            background-image: 
+                repeating-linear-gradient(45deg, rgba(137, 180, 250, 0.03) 0px, rgba(137, 180, 250, 0.03) 2px, transparent 2px, transparent 8px),
+                repeating-linear-gradient(135deg, rgba(203, 166, 247, 0.03) 0px, rgba(203, 166, 247, 0.03) 2px, transparent 2px, transparent 8px);
+            opacity: 0.6;
+        }
+        
+        /* Узор из восьмиконечных звёзд (арабский мотив) */
+        .arabesque-bg::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.12"><path fill="none" stroke="%2389b4fa" stroke-width="0.6" d="M50,10 L60,25 L50,40 L40,25 Z M50,10 L40,25 L30,40 L40,55 L50,70 L60,55 L70,40 L60,25 Z M50,40 L60,55 L50,70 L40,55 Z M30,40 L40,55 L30,70 L20,55 Z M70,40 L60,55 L70,70 L80,55 Z M50,70 L60,85 L50,100 L40,85 Z M50,70 L40,85 L30,100 L40,115 L50,130 L60,115 L70,100 L60,85 Z"/></svg>');
+            background-repeat: repeat;
+            background-size: 80px 80px;
+            opacity: 0.25;
+            pointer-events: none;
+        }
+
+        .blur-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .blur-circle {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            will-change: transform, width, height, opacity;
+        }
+
+        .blur-circle-1 { background: radial-gradient(circle, #cba6f7, #89b4fa); opacity: 0.3; }
+        .blur-circle-2 { background: radial-gradient(circle, #f5c2e7, #b4befe); opacity: 0.28; }
+        .blur-circle-3 { background: radial-gradient(circle, #94e2d5, #f9e2af); opacity: 0.25; }
+        .blur-circle-4 { background: radial-gradient(circle, #f38ba8, #a6e3a1); opacity: 0.22; }
+        .blur-circle-5 { background: radial-gradient(circle, #89b4fa, #cba6f7); opacity: 0.2; }
+
+        #networkCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            z-index: -1;
+            pointer-events: none;
+            opacity: 0.45;
+        }
+
+        :root {
+            --bg-primary: #1e1e2e;
+            --bg-secondary: #181825;
+            --accent: #89b4fa;
+            --accent-dark: #6c96d4;
+            --accent-purple: #cba6f7;
+            --text-primary: #cdd6f4;
+            --text-secondary: #a6adc8;
+            --border-light: #45475a;
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+            --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+            --radius-card: 1rem;
+            --transition: all 0.2s ease;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        section {
+            padding: 5rem 0;
+            position: relative;
+            backdrop-filter: blur(2px);
+        }
+
+        /* Флип-карты */
+        .flip-card {
+            background-color: transparent;
+            width: 100%;
+            height: 100%;
+            perspective: 1500px;
+            cursor: pointer;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            transform-style: preserve-3d;
+            border-radius: var(--radius-card);
+            transform: rotateY(180deg);
+        }
+
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(0deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: var(--radius-card);
+            padding: 1.5rem;
+            backdrop-filter: blur(4px);
+            background: rgba(30, 30, 46, 0.85);
+            border: 1px solid rgba(69, 71, 90, 0.5);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .flip-card-front {
+            transform: rotateY(180deg);
+            background: linear-gradient(135deg, rgba(30, 30, 46, 0.9), rgba(49, 50, 68, 0.85));
+            border-color: rgba(137, 180, 250, 0.4);
+            text-align: center;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .flip-card-front i {
+            font-size: 3rem;
+            color: var(--accent);
+            margin-bottom: 0.2rem;
+        }
+        .flip-card-front h4 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #89b4fa, #cba6f7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .flip-card-front p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .flip-card-back {
+            transform: rotateY(0deg);
+            background: rgba(30, 30, 46, 0.9);
+            border-color: rgba(137, 180, 250, 0.3);
+            text-align: left;
+            justify-content: center;
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+        .card-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+            text-align: left;
+        }
+        .card-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.3;
+            margin-bottom: 0.5rem;
+            text-align: left;
+        }
+        .card-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-align: left;
+        }
+
+        .features-grid, .ide-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .features-grid > div, .ide-grid > div {
+            height: 100%;
+            min-height: 260px;
+        }
+
+        @media (max-width: 640px) {
+            .features-grid, .ide-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .navbar {
+            backdrop-filter: blur(16px);
+            background: rgba(24, 24, 37, 0.85);
+            border-bottom: 1px solid rgba(69, 71, 90, 0.8);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #89b4fa, #cba6f7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .logo-icon {
+            font-size: 1.6rem;
+            background: linear-gradient(135deg, #89b4fa, #cba6f7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #cdd6f4;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        .nav-links a:hover {
+            color: #89b4fa;
+        }
+        .menu-icon {
+            display: none;
+            font-size: 1.6rem;
+            cursor: pointer;
+            color: #cdd6f4;
+        }
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background: rgba(24, 24, 37, 0.95);
+                backdrop-filter: blur(20px);
+                padding: 2rem;
+                gap: 1.5rem;
+                box-shadow: var(--shadow-md);
+                border-bottom: 1px solid #45475a;
+            }
+            .nav-links.active {
+                display: flex;
+            }
+            .menu-icon {
+                display: block;
+            }
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 40px;
+            font-weight: 600;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+            font-size: 1rem;
+            text-decoration: none;
+        }
+        .btn-primary {
+            background: #89b4fa;
+            color: #1e1e2e;
+            box-shadow: var(--shadow-sm);
+        }
+        .btn-primary:hover {
+            background: #6c96d4;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        .btn-outline {
+            background: rgba(30, 30, 46, 0.7);
+            backdrop-filter: blur(4px);
+            border: 1px solid #45475a;
+            color: #cdd6f4;
+        }
+        .btn-outline:hover {
+            border-color: #89b4fa;
+            color: #89b4fa;
+            transform: translateY(-2px);
+            background: rgba(30, 30, 46, 0.9);
+        }
+        .hero-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        .stat-badge {
+            background: rgba(49, 50, 68, 0.8);
+            backdrop-filter: blur(4px);
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #a6adc8;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .hero-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+        }
+        .hero-content {
+            flex: 1;
+            min-width: 280px;
+        }
+        .hero-image {
+            flex: 1;
+            min-width: 300px;
+        }
+        .custom-image-container {
+            width: 100%;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: var(--shadow-hover);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: rgba(24, 24, 37, 0.8);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(69, 71, 90, 0.5);
+        }
+        .custom-image-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 35px -12px rgba(0, 0, 0, 0.4);
+        }
+        .custom-image {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Стили для карточки загрузки (без угловых иконок) */
+        .download-card {
+            position: relative;
+            border-radius: 2rem;
+            padding: 2rem;
+            text-align: center;
+            backdrop-filter: blur(4px);
+            background: rgba(30, 30, 46, 0.75);
+            border: 1px solid rgba(69, 71, 90, 0.5);
+            margin: 2rem 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        /* Фоновый узор из символов */
+        .download-card::before {
+            content: "{ } ; [ ] ( ) -> { } ; [ ] ( ) ->";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            font-family: monospace;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: rgba(137, 180, 250, 0.08);
+            white-space: nowrap;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: rotate(-5deg) scale(1.2);
+            letter-spacing: 4px;
+        }
+
+        /* Дополнительный узор из точек */
+        .download-card::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(rgba(137, 180, 250, 0.15) 1px, transparent 1px);
+            background-size: 20px 20px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Контент карточки выше декораций */
+        .download-card > * {
+            position: relative;
+            z-index: 2;
+        }
+
+        .big-download-btn {
+            background: #89b4fa;
+            color: #1e1e2e;
+            padding: 1rem 2.5rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 60px;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+        }
+        .big-download-btn:hover {
+            background: #6c96d4;
+            transform: scale(1.02);
+            box-shadow: var(--shadow-md);
+        }
+        .platform-note {
+            margin-top: 1rem;
+            padding: 0.5rem;
+            background: rgba(49, 50, 68, 0.8);
+            backdrop-filter: blur(4px);
+            border-radius: 40px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: #89b4fa;
+        }
+        .badge-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .badge-tech {
+            padding: 0.3rem 1rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            backdrop-filter: blur(4px);
+            background: rgba(30, 30, 46, 0.75);
+            border: 1px solid rgba(69, 71, 90, 0.5);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #cdd6f4;
+        }
+        .windows-only {
+            background: linear-gradient(135deg, #89b4fa, #cba6f7);
+            color: #1e1e2e;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+        .hybrid-badge {
+            background: linear-gradient(135deg, #cba6f7, #89b4fa);
+            color: #1e1e2e;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+        .specs-wrapper {
+            margin-top: 2rem;
+        }
+        .specs-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+        .specs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.25rem;
+        }
+        .specs-card {
+            border-radius: 1.25rem;
+            padding: 1.25rem 1.5rem;
+            backdrop-filter: blur(4px);
+            background: rgba(30, 30, 46, 0.75);
+            border: 1px solid rgba(69, 71, 90, 0.5);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .specs-card:hover {
+            backdrop-filter: blur(8px);
+            background: rgba(30, 30, 46, 0.9);
+            transform: translateY(-4px);
+            border-color: rgba(137, 180, 250, 0.5);
+        }
+        .specs-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(137, 180, 250, 0.15);
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #89b4fa;
+        }
+        .specs-content {
+            flex: 1;
+        }
+        .specs-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            color: #a6adc8;
+            margin-bottom: 0.25rem;
+        }
+        .specs-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #cdd6f4;
+            line-height: 1.3;
+        }
+        .specs-desc {
+            font-size: 0.8rem;
+            color: #a6adc8;
+            margin-top: 0.25rem;
+        }
+        .beta-badge {
+            background: rgba(203, 166, 247, 0.2);
+            border: 1px solid rgba(203, 166, 247, 0.4);
+            color: #cba6f7;
+            font-size: 0.65rem;
+            font-weight: 600;
+            padding: 0.2rem 0.55rem;
+            border-radius: 30px;
+            margin-left: 0.6rem;        
+        }
+        footer {
+            border-top: 1px solid rgba(69, 71, 90, 0.6);
+            padding: 2rem 0;
+            text-align: center;
+            color: #a6adc8;
+            backdrop-filter: blur(4px);
+            background: rgba(24, 24, 37, 0.7);
+            position: relative;
+            z-index: 2;
+        }
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: 0.7s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .ide-logo-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .ide-logo-row h2 {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 0;
+        }
+        .resource-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.2rem;
+            text-decoration: none;
+            color: #cdd6f4;
+            transition: var(--transition);
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+        }
+        .resource-link:hover {
+            color: #89b4fa;
+            transform: translateY(-2px);
+            background: rgba(137, 180, 250, 0.1);
+        }
+
+        /* Кнопка наверх */
+        .scroll-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: rgba(137, 180, 250, 0.8);
+            backdrop-filter: blur(8px);
+            color: #1e1e2e;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 99;
+            border: none;
+            font-size: 1.3rem;
+        }
+        .scroll-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        .scroll-top:hover {
+            background: #89b4fa;
+            transform: translateY(-3px);
+        }
+    </style>
+</head>
+<body>
+
+<div class="arabesque-bg"></div>
+<div class="blur-bg">
+    <div class="blur-circle blur-circle-1"></div>
+    <div class="blur-circle blur-circle-2"></div>
+    <div class="blur-circle blur-circle-3"></div>
+    <div class="blur-circle blur-circle-4"></div>
+    <div class="blur-circle blur-circle-5"></div>
+</div>
+<canvas id="networkCanvas"></canvas>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="logo">
+            <i class="fas fa-lightbulb logo-icon"></i>
+            <span>Lumen</span>
+        </div>
+        <div class="menu-icon" id="menuToggle">
+            <i class="fas fa-bars"></i>
+        </div>
+        <div class="nav-links" id="navLinks">
+            <a href="#features">Возможности</a>
+            <a href="#ide">Lumen IDE</a>
+            <a href="#docs">Документация</a>
+            <a href="#download" class="btn btn-outline" style="padding:0.5rem 1.2rem">Скачать</a>
+        </div>
+    </div>
+</nav>
+
+<main>
+    <section id="hero">
+        <div class="container reveal">
+            <div class="hero-wrapper">
+                <div class="hero-content">
+                    <h1 style="font-size: 3rem; line-height: 1.2;"><span style="color: #cba6f7;">Lumen</span> <span style="color: #89b4fa;">·</span> <span style="color: #cba6f7;">Скорость C++</span> <span style="color: #89b4fa;">·</span> <br> Простота Python</h1>
+                    <p style="font-size: 1.25rem; margin: 1.5rem 0; color: #a6adc8;">Современный компилируемый язык с гибридной типизацией для обучения школьников системному мышлению. Сочетает мощь низкоуровневого кода и чистоту высокоуровневых абстракций.</p>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <a href="#download" class="btn btn-primary"><i class="fas fa-download"></i> Скачать Lumen IDE</a>
+                        <a href="#" class="btn btn-outline"><i class="fas fa-book"></i> Документация</a>
+                    </div>
+                    <div class="hero-stats">
+                        <span class="stat-badge"><i class="fas fa-bolt"></i> Компилируемый</span>
+                        <span class="stat-badge"><i class="fas fa-adjust"></i> Гибридная типизация</span>
+                        <span class="stat-badge"><i class="fas fa-brain"></i> Умные указатели</span>
+                        <span class="stat-badge"><i class="fas fa-lambda"></i> Функции высшего порядка</span>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="custom-image-container">
+                        <img class="custom-image" src="hero_image.png" alt="Lumen IDE Screenshot">
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <br/>
+    
+        <div class="container">
+            <h2>Возможности языка Lumen</h2>
+            <div class="features-grid">
+                <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-shield-alt"></i><h4>Безопасные указатели</h4><p>Контроль памяти без GC</p></div><div class="flip-card-back"><div class="card-icon"><i class="fas fa-shield-alt"></i></div><div class="card-label">Управление памятью</div><div class="card-value">Безопасные указатели</div><div class="card-desc">*auto, static, move, copy — контроль памяти без GC, как в Rust, но с простым синтаксисом.</div></div></div></div>
+                <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-layer-group"></i><h4>Функции высшего порядка</h4><p>Замыкания, фабрики</p></div><div class="flip-card-back"><div class="card-icon"><i class="fas fa-layer-group"></i></div><div class="card-label">Функциональное программирование</div><div class="card-value">Функции высшего порядка</div><div class="card-desc">Замыкания (global), функции как объекты, фабрики — мощь функционального стиля.</div></div></div></div>
+                <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-cogs"></i><h4>Макросы</h4><p>Генерация кода на лету</p></div><div class="flip-card-back"><div class="card-icon"><i class="fas fa-cogs"></i></div><div class="card-label">Метапрограммирование</div><div class="card-value">Макросы и генерация кода</div><div class="card-desc">#macro, #define для кодогенерации и гибкости без потери производительности.</div></div></div></div>
+                <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-cubes"></i><h4>Пространства имён</h4><p>Модульность без классов</p></div><div class="flip-card-back"><div class="card-icon"><i class="fas fa-cubes"></i></div><div class="card-label">Модульность</div><div class="card-value">Пространства имён</div><div class="card-desc">Модульность через namespace, ООП-подобный синтаксис без классов.</div></div></div></div>
+                <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-globe"></i><h4>Глобальный контекст</h4><p>Состояние в замыканиях</p></div><div class="flip-card-back"><div class="card-icon"><i class="fas fa-globe"></i></div><div class="card-label">Замыкания</div><div class="card-value">Глобальный контекст</div><div class="card-desc">global для замыканий и фабрик — сохранение состояния с первого класса.</div></div></div></div>
+                <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-code"></i><h4>Гибридная типизация</h4><p>Статика + вывод типов</p></div><div class="flip-card-back"><div class="card-icon"><i class="fas fa-code"></i></div><div class="card-label">Типизация</div><div class="card-value">Гибридная типизация</div><div class="card-desc">Статическая типизация с auto-выводом — безопасность типов без избыточности.</div></div></div></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="download" class="reveal">
+        <div class="container">
+            <div class="download-card">
+                <i class="fab fa-windows" style="font-size: 2.5rem; color: #89b4fa;"></i>
+                <h3 style="margin: 0.5rem 0;">Lumen IDE для Windows 64-bit</h3>
+                <p style="margin-bottom: 0.5rem; color: #a6adc8;">Версия 1.05b — первая стабильная сборка</p>
+                <div class="platform-note">
+                    <i class="fas fa-check-circle"></i> Поддерживаемая платформа: Windows 10/11 (64-bit)
+                </div>
+                <div style="margin: 1.5rem 0;">
+                    <button id="windowsDownloadBtn" class="big-download-btn"><i class="fas fa-download"></i> Скачать Lumen IDE для Windows 64-bit</button>
+                </div>
+                <p style="font-size: 0.85rem; color: #a6adc8;"><i class="fas fa-info-circle"></i> Установщик включает компилятор Lumen, Lumen IDE и все необходимые компоненты</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="ide" class="reveal">
+        <div class="container">
+            <div class="ide-logo-row">
+                <h2><i class="fas fa-lightbulb"></i> Lumen IDE</h2>
+                <span class="windows-only"><i class="fab fa-windows"></i> Windows 64-bit</span>
+                <span class="hybrid-badge"><i class="fas fa-code"></i> Гибридная типизация</span>
+            </div>
+            <p style="font-size: 1.2rem; margin-top: 0.5rem;"><strong>Integrated Development Environment for Lumen</strong></p>
+            <p style="max-width: 720px; margin-top: 0.5rem; color: #a6adc8;">Lumen IDE — легкая, но мощная среда разработки, написанная на Python + PyQt6. Не требует настройки: установил и пиши код. Кастомный лексер, языковой сервер и автодополнение с иконками типов.</p>
+            <div class="badge-list">
+                <span class="badge-tech"><i class="fab fa-python"></i> Python + PyQt6</span>
+                <span class="badge-tech"><i class="fas fa-code"></i> QScintilla</span>
+                <span class="badge-tech"><i class="fas fa-brain"></i> Language Server</span>
+                <span class="badge-tech"><i class="fas fa-save"></i> Автосохранение</span>
+                <span class="badge-tech"><i class="fab fa-windows"></i> Windows 64-bit Only</span>
+                <span class="badge-tech"><i class="fas fa-adjust"></i> Гибридная типизация</span>
+            </div>
+            <h3 style="margin: 2rem 0 1rem;">Ключевые возможности IDE</h3>
+            <div class="ide-grid">
+                <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-paint-roller"></i><h4>Подсветка синтаксиса</h4><p>Не просто текст а магия</p></div><div class="flip-card-back"><div class="card-icon"><i class="fas fa-paint-roller"></i></div><div class="card-label">Визуализация кода</div><div class="card-value">Подсветка синтаксиса</div><div class="card-desc">Кастомный лексер для всех конструкций Lumen позволяет подсвечиваеть каждую лексему языка по отдельности.</div></div></div></div>
+                <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-lightbulb"></i><h4>Автодополнение</h4><p>Иконки типов, подсказки</p></div><div class="flip-card-back"><div class="card-icon"><i class="fas fa-lightbulb"></i></div><div class="card-label">IntelliSense</div><div class="card-value">Автодополнение кода</div><div class="card-desc">Подсказки с иконками типов (K, M, T, L, D, S, F) на основе анализа.</div></div></div></div>
+                <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-server"></i><h4>Языковой сервер</h4><p>Программа работает в реальном времени</p></div><div class="flip-card-back"><div class="card-icon"><i class="fas fa-server"></i></div><div class="card-label">Анализ кода</div><div class="card-value">Языковой сервер</div><div class="card-desc">Фоновая проверка ошибок, семантический анализ в реальном времени. Это позволяет увидеть результат программы не запуская ее.</div></div></div></div>
+                <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-bug"></i><h4>Визуализация ошибок</h4><p>Ошибка? - не беда.</p></div><div class="flip-card-back"><div class="card-icon"><i class="fas fa-bug"></i></div><div class="card-label">Диагностика</div><div class="card-value">Визуализация ошибок</div><div class="card-desc">Подсветка на полях, всплывающие подсказки с пояснением прямо в строках кода.</div></div></div></div>
+                <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-outdent"></i><h4>Сворачивание кода <span class="beta-badge">Beta</span></h4><p>Code folding</p></div><div class="flip-card-back"><div class="card-icon"><i class="fas fa-outdent"></i></div><div class="card-label">Навигация</div><div class="card-value">Сворачивание кода <span class="beta-badge">Beta</span></div><div class="card-desc">Code folding для удобной навигации в больших файлах.</div></div></div></div>
+                <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-palette"></i><h4>Кастомное меню / темы</h4><p>Светлая / тёмная тема</p></div><div class="flip-card-back"><div class="card-icon"><i class="fas fa-palette"></i></div><div class="card-label">Интерфейс</div><div class="card-value">Кастомное меню / темы</div><div class="card-desc">Закругленные меню, анимированные кнопки, большое количество красивых тем.</div></div></div></div>
+            </div>
+            <div class="specs-wrapper">
+                <div class="specs-title"><i class="fas fa-microchip"></i><span>Технические характеристики Lumen IDE</span></div>
+                <div class="specs-grid">
+                    <div class="specs-card"><div class="specs-icon"><i class="fas fa-tag"></i></div><div class="specs-content"><div class="specs-label">Версия</div><div class="specs-value">1.05b <span class="specs-badge">Stable</span></div><div class="specs-desc">Первая стабильная сборка</div></div></div>
+                    <div class="specs-card"><div class="specs-icon"><i class="fab fa-python"></i></div><div class="specs-content"><div class="specs-label">Технологии</div><div class="specs-value">Python 3.10+ · PyQt6 · QScintilla</div><div class="specs-desc">Современный стек</div></div></div>
+                    <div class="specs-card"><div class="specs-icon"><i class="fab fa-windows"></i></div><div class="specs-content"><div class="specs-label">Платформа</div><div class="specs-value">Windows 10 / 11 (64-bit)</div><div class="specs-desc">Оптимизирован</div></div></div>
+                    <div class="specs-card"><div class="specs-icon"><i class="fas fa-memory"></i></div><div class="specs-content"><div class="specs-label">Системные требования</div><div class="specs-value">2 ГБ ОЗУ · 100 МБ диска</div><div class="specs-desc">Легковесная среда</div></div></div>
+                    <div class="specs-card"><div class="specs-icon"><i class="fas fa-keyboard"></i></div><div class="specs-content"><div class="specs-label">Горячие клавиши</div><div class="specs-value">F5 (Запуск) · Ctrl+S · Ctrl+Z</div><div class="specs-desc">Интуитивные сочетания</div></div></div>
+                    <div class="specs-card"><div class="specs-icon"><i class="fas fa-paint-brush"></i></div><div class="specs-content"><div class="specs-label">Кастомизация</div><div class="specs-value">Светлая/Темная тема</div><div class="specs-desc">Персонализируйте IDE</div></div></div>
+                    <div class="specs-card"><div class="specs-icon"><i class="fas fa-rocket"></i></div><div class="specs-content"><div class="specs-label">Производительность</div><div class="specs-value">Мгновенный запуск · Автосохранение</div><div class="specs-desc">Пишите сразу</div></div></div>
+                    <div class="specs-card"><div class="specs-icon"><i class="fas fa-code-branch"></i></div><div class="specs-content"><div class="specs-label">Поддержка Lumen</div><div class="specs-value">100% всех конструкций</div><div class="specs-desc">Указатели · Макросы · Namespace · Замыкания</div></div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="docs" class="reveal">
+        <div class="container" style="text-align: center;">
+            <h2>Сообщество и ресурсы</h2>
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; margin: 2rem 0;">
+                <a href="#" class="resource-link"><i class="fab fa-github fa-lg"></i> GitHub</a>
+                <a href="#" class="resource-link"><i class="fab fa-telegram fa-lg"></i> Telegram</a>
+                <a href="#" class="resource-link"><i class="fab fa-vk fa-lg"></i> VK</a>
+            </div>
+        </div>
+    </section>
+    <footer>
+        <div class="container">
+            <p><i class="far fa-copyright"></i> 2025 Lumen Language & Lumen IDE. Все права защищены.</p>
+        </div>
+    </footer>
+</main>
+
+<button class="scroll-top" id="scrollTopBtn"><i class="fas fa-arrow-up"></i></button>
+
+<script>
+    const canvas = document.getElementById('networkCanvas');
+    let ctx = canvas.getContext('2d');
+    let particles = [];
+    const particleCount = 70;
+    const connectionDistance = 150;
+    function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    class Particle {
+        constructor(x, y, vx, vy) { this.x = x; this.y = y; this.vx = vx; this.vy = vy; this.radius = 1.2; }
+        update() {
+            this.x += this.vx; this.y += this.vy;
+            if (this.x < 0) { this.x = 0; this.vx = -this.vx; }
+            if (this.x > canvas.width) { this.x = canvas.width; this.vx = -this.vx; }
+            if (this.y < 0) { this.y = 0; this.vy = -this.vy; }
+            if (this.y > canvas.height) { this.y = canvas.height; this.vy = -this.vy; }
+        }
+        draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fillStyle = '#89b4fa'; ctx.fill(); }
+    }
+    function initParticles() {
+        particles = [];
+        for (let i = 0; i < particleCount; i++) {
+            let x = Math.random() * canvas.width, y = Math.random() * canvas.height;
+            let vx = (Math.random() - 0.5) * 0.6, vy = (Math.random() - 0.5) * 0.6;
+            particles.push(new Particle(x, y, vx, vy));
+        }
+    }
+    function drawLines() {
+        for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+                let dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance < connectionDistance) {
+                    let opacity = 0.08 * (1 - distance / connectionDistance);
+                    ctx.beginPath();
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(particles[j].x, particles[j].y);
+                    ctx.strokeStyle = `rgba(137, 180, 250, ${opacity * 1.2})`;
+                    ctx.lineWidth = 0.8;
+                    ctx.stroke();
+                }
+            }
+        }
+    }
+    function animateNetwork() {
+        if (!ctx) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let p of particles) { p.update(); p.draw(); }
+        drawLines();
+        requestAnimationFrame(animateNetwork);
+    }
+    window.addEventListener('resize', () => { resizeCanvas(); initParticles(); });
+    resizeCanvas(); initParticles(); animateNetwork();
+
+    const circles = document.querySelectorAll('.blur-circle');
+    const circleParams = [
+        { x: -150, y: -150, size: 500, vx: 0.3, vy: 0.2, sizeSpeed: 0.15, minSize: 400, maxSize: 700, angle: 0 },
+        { x: window.innerWidth - 600, y: window.innerHeight - 600, size: 600, vx: -0.25, vy: 0.35, sizeSpeed: 0.12, minSize: 480, maxSize: 800, angle: 45 },
+        { x: window.innerWidth * 0.6, y: window.innerHeight * 0.4, size: 450, vx: 0.4, vy: -0.3, sizeSpeed: 0.18, minSize: 350, maxSize: 650, angle: 90 },
+        { x: window.innerWidth * 0.1, y: window.innerHeight * 0.7, size: 350, vx: 0.2, vy: 0.45, sizeSpeed: 0.1, minSize: 280, maxSize: 550, angle: 135 },
+        { x: window.innerWidth * 0.8, y: window.innerHeight * 0.2, size: 400, vx: -0.35, vy: -0.25, sizeSpeed: 0.14, minSize: 320, maxSize: 600, angle: 180 }
+    ];
+    function updateCircles() {
+        const width = window.innerWidth, height = window.innerHeight;
+        circles.forEach((circle, index) => {
+            const params = circleParams[index];
+            if (!params) return;
+            params.x += params.vx; params.y += params.vy;
+            params.angle += params.sizeSpeed * 0.02;
+            let sizeFactor = 0.7 + Math.sin(params.angle) * 0.3;
+            let newSize = params.minSize + (params.maxSize - params.minSize) * sizeFactor;
+            if (params.x < -params.size * 0.5) { params.x = -params.size * 0.5; params.vx = Math.abs(params.vx); }
+            if (params.x > width - params.size * 0.5) { params.x = width - params.size * 0.5; params.vx = -Math.abs(params.vx); }
+            if (params.y < -params.size * 0.5) { params.y = -params.size * 0.5; params.vy = Math.abs(params.vy); }
+            if (params.y > height - params.size * 0.5) { params.y = height - params.size * 0.5; params.vy = -Math.abs(params.vy); }
+            circle.style.left = params.x + 'px'; circle.style.top = params.y + 'px';
+            circle.style.width = newSize + 'px'; circle.style.height = newSize + 'px';
+            const baseOpacity = index === 0 ? 0.3 : index === 1 ? 0.28 : index === 2 ? 0.25 : index === 3 ? 0.22 : 0.2;
+            circle.style.opacity = Math.min(0.45, Math.max(0.15, baseOpacity * (0.7 + Math.sin(params.angle) * 0.3)));
+        });
+        requestAnimationFrame(updateCircles);
+    }
+    updateCircles();
+
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+    if(menuToggle) menuToggle.addEventListener('click', () => navLinks.classList.toggle('active'));
+
+    // Плавная прокрутка для якорей
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                e.preventDefault();
+                targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                if (navLinks.classList.contains('active')) navLinks.classList.remove('active');
+            }
+        });
+    });
+
+    const winBtn = document.getElementById('windowsDownloadBtn');
+    if(winBtn) {
+        winBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            alert("Скачивание Lumen IDE v1.05b для Windows 64-bit\nРазмер: ~85 MB\nУстановщик готов к запуску.");
+        });
+    }
+
+    const scrollTopBtn = document.getElementById('scrollTopBtn');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+            scrollTopBtn.classList.add('visible');
+        } else {
+            scrollTopBtn.classList.remove('visible');
+        }
+    });
+    scrollTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    const revealElements = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    revealElements.forEach(el => observer.observe(el));
+    revealElements.forEach(el => { if(el.getBoundingClientRect().top < window.innerHeight-100) el.classList.add('visible'); });
+</script>
+</body>
+</html>
