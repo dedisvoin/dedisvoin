@@ -148,7 +148,7 @@
             }
         }
 
-        /* Flip-карты: десктопное поведение (hover) */
+        /* Flip-карты */
         .flip-card {
             background-color: transparent;
             width: 100%;
@@ -167,7 +167,7 @@
             border-radius: var(--radius-card);
             transform: rotateY(180deg);
         }
-        .flip-card:hover .flip-card-inner {
+        .flip-card.flipped .flip-card-inner {
             transform: rotateY(0deg);
         }
         .flip-card-front, .flip-card-back {
@@ -241,13 +241,36 @@
             color: var(--text-secondary);
         }
 
-        /* Мобильное поведение: переворот при скролле (класс .flipped) */
-        @media (max-width: 768px) {
+        /* Индикатор нажатия для мобильных */
+        .tap-hint {
+            display: none;
+            font-size: 0.7rem;
+            color: rgba(137, 180, 250, 0.7);
+            margin-top: 0.5rem;
+            font-style: italic;
+            text-align: center;
+        }
+
+        /* Десктоп: hover */
+        @media (min-width: 769px) {
             .flip-card:hover .flip-card-inner {
-                transform: rotateY(180deg); /* отключаем hover */
+                transform: rotateY(0deg);
             }
             .flip-card.flipped .flip-card-inner {
                 transform: rotateY(0deg);
+            }
+        }
+
+        /* Мобильные: клик */
+        @media (max-width: 768px) {
+            .flip-card:hover .flip-card-inner {
+                transform: rotateY(180deg);
+            }
+            .flip-card.flipped .flip-card-inner {
+                transform: rotateY(0deg);
+            }
+            .tap-hint {
+                display: block;
             }
         }
 
@@ -595,6 +618,105 @@
             background: #89b4fa;
             transform: translateY(-3px);
         }
+
+        /* Стили для примеров кода */
+        .code-examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .code-card {
+            backdrop-filter: blur(8px);
+            background: rgba(30, 30, 46, 0.85);
+            border: 1px solid rgba(69, 71, 90, 0.5);
+            border-radius: 1rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .code-card:hover {
+            border-color: rgba(137, 180, 250, 0.5);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            transform: translateY(-2px);
+        }
+        .code-card-header {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid rgba(69, 71, 90, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .code-card-header i {
+            color: #89b4fa;
+            font-size: 1.2rem;
+        }
+        .code-card-header h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #cdd6f4;
+            flex: 1;
+        }
+        .code-tag {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            background: rgba(137, 180, 250, 0.15);
+            color: #89b4fa;
+            font-weight: 500;
+        }
+        .code-card-body {
+            padding: 1rem 1.25rem;
+            overflow-x: auto;
+        }
+        .code-card-body pre {
+            margin: 0;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.8rem;
+            line-height: 1.6;
+            color: #cdd6f4;
+            white-space: pre;
+            tab-size: 2;
+        }
+        .code-card-body pre .keyword {
+            color: #cba6f7;
+            font-weight: 500;
+        }
+        .code-card-body pre .type {
+            color: #89b4fa;
+        }
+        .code-card-body pre .string {
+            color: #a6e3a1;
+        }
+        .code-card-body pre .number {
+            color: #fab387;
+        }
+        .code-card-body pre .comment {
+            color: #6c7086;
+            font-style: italic;
+        }
+        .code-card-body pre .func {
+            color: #f5c2e7;
+        }
+        .code-card-body pre .op {
+            color: #94e2d5;
+        }
+
+        .code-section-intro {
+            max-width: 720px;
+            margin-bottom: 1rem;
+            color: #a6adc8;
+            font-size: 1.05rem;
+        }
+
+        @media (max-width: 640px) {
+            .code-examples-grid {
+                grid-template-columns: 1fr;
+            }
+            .code-card-body pre {
+                font-size: 0.7rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -620,6 +742,7 @@
         </div>
         <div class="nav-links" id="navLinks">
             <a href="#features">Возможности</a>
+            <a href="#examples">Примеры</a>
             <a href="#ide">Lumen IDE</a>
             <a href="#docs">Документация</a>
             <a href="#download" class="btn btn-outline" style="padding:0.5rem 1.2rem">Скачать</a>
@@ -642,7 +765,6 @@
                         <span class="stat-badge"><i class="fas fa-bolt"></i> Компилируемый</span>
                         <span class="stat-badge"><i class="fas fa-adjust"></i> Гибридная типизация</span>
                         <span class="stat-badge"><i class="fas fa-brain"></i> Умные указатели</span>
-                        <span class="stat-badge"><i class="fas fa-lambda"></i> Функции высшего порядка</span>
                     </div>
                 </div>
                 <div class="hero-image" style="flex: 1; min-width: 300px;">
@@ -658,12 +780,291 @@
         <div class="container">
             <h2>Возможности языка Lumen</h2>
             <div class="features-grid">
-                <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-shield-alt"></i><h4>Безопасные указатели</h4><p>Контроль памяти без GC</p></div><div class="flip-card-back"><div class="card-icon"><i class="fas fa-shield-alt"></i></div><div class="card-label">Управление памятью</div><div class="card-value">Безопасные указатели</div><div class="card-desc">*auto, static, move, copy — контроль памяти без GC, как в Rust, но с простым синтаксисом.</div></div></div></div>
-                <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-layer-group"></i><h4>Функции высшего порядка</h4><p>Замыкания, фабрики</p></div><div class="flip-card-back"><div class="card-icon"><i class="fas fa-layer-group"></i></div><div class="card-label">Функциональное программирование</div><div class="card-value">Функции высшего порядка</div><div class="card-desc">Замыкания (global), функции как объекты, фабрики — мощь функционального стиля.</div></div></div></div>
-                <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-cogs"></i><h4>Макросы</h4><p>Генерация кода на лету</p></div><div class="flip-card-back"><div class="card-icon"><i class="fas fa-cogs"></i></div><div class="card-label">Метапрограммирование</div><div class="card-value">Макросы и генерация кода</div><div class="card-desc">#macro, #define для кодогенерации и гибкости без потери производительности.</div></div></div></div>
-                <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-cubes"></i><h4>Пространства имён</h4><p>Модульность без классов</p></div><div class="flip-card-back"><div class="card-icon"><i class="fas fa-cubes"></i></div><div class="card-label">Модульность</div><div class="card-value">Пространства имён</div><div class="card-desc">Модульность через namespace, ООП-подобный синтаксис без классов.</div></div></div></div>
-                <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-globe"></i><h4>Глобальный контекст</h4><p>Состояние в замыканиях</p></div><div class="flip-card-back"><div class="card-icon"><i class="fas fa-globe"></i></div><div class="card-label">Замыкания</div><div class="card-value">Глобальный контекст</div><div class="card-desc">global для замыканий и фабрик — сохранение состояния с первого класса.</div></div></div></div>
-                <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-code"></i><h4>Гибридная типизация</h4><p>Статика + вывод типов</p></div><div class="flip-card-back"><div class="card-icon"><i class="fas fa-code"></i></div><div class="card-label">Типизация</div><div class="card-value">Гибридная типизация</div><div class="card-desc">Статическая типизация с auto-выводом — безопасность типов без избыточности.</div></div></div></div>
+                <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-shield-alt"></i><h4>Безопасные указатели</h4><p>Контроль памяти без GC</p><span class="tap-hint">Нажмите, чтобы узнать подробнее</span></div><div class="flip-card-back"><div class="card-icon"><i class="fas fa-shield-alt"></i></div><div class="card-label">Управление памятью</div><div class="card-value">Безопасные указатели</div><div class="card-desc">*auto, static, move, copy — контроль памяти без GC, как в Rust, но с простым синтаксисом.</div></div></div></div>
+                <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-layer-group"></i><h4>Функции высшего порядка</h4><p>Замыкания, фабрики</p><span class="tap-hint">Нажмите, чтобы узнать подробнее</span></div><div class="flip-card-back"><div class="card-icon"><i class="fas fa-layer-group"></i></div><div class="card-label">Функциональное программирование</div><div class="card-value">Функции высшего порядка</div><div class="card-desc">Замыкания (global), функции как объекты, фабрики — мощь функционального стиля.</div></div></div></div>
+                <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-cogs"></i><h4>Макросы</h4><p>Генерация кода на лету</p><span class="tap-hint">Нажмите, чтобы узнать подробнее</span></div><div class="flip-card-back"><div class="card-icon"><i class="fas fa-cogs"></i></div><div class="card-label">Метапрограммирование</div><div class="card-value">Макросы и генерация кода</div><div class="card-desc">#macro, #define для кодогенерации и гибкости без потери производительности.</div></div></div></div>
+                <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-cubes"></i><h4>Пространства имён</h4><p>Модульность без классов</p><span class="tap-hint">Нажмите, чтобы узнать подробнее</span></div><div class="flip-card-back"><div class="card-icon"><i class="fas fa-cubes"></i></div><div class="card-label">Модульность</div><div class="card-value">Пространства имён</div><div class="card-desc">Модульность через namespace, ООП-подобный синтаксис без классов.</div></div></div></div>
+                <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-globe"></i><h4>Глобальный контекст</h4><p>Состояние в замыканиях</p><span class="tap-hint">Нажмите, чтобы узнать подробнее</span></div><div class="flip-card-back"><div class="card-icon"><i class="fas fa-globe"></i></div><div class="card-label">Замыкания</div><div class="card-value">Глобальный контекст</div><div class="card-desc">global для замыканий и фабрик — сохранение состояния с первого класса.</div></div></div></div>
+                <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-code"></i><h4>Гибридная типизация</h4><p>Статика + вывод типов</p><span class="tap-hint">Нажмите, чтобы узнать подробнее</span></div><div class="flip-card-back"><div class="card-icon"><i class="fas fa-code"></i></div><div class="card-label">Типизация</div><div class="card-value">Гибридная типизация</div><div class="card-desc">Статическая типизация с auto-выводом — безопасность типов без избыточности.</div></div></div></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="examples" class="reveal">
+        <div class="container">
+            <h2>Примеры кода на Lumen</h2>
+            <p class="code-section-intro">От простых конструкций до продвинутых паттернов — посмотрите, насколько выразителен Lumen.</p>
+            
+            <div class="code-examples-grid">
+                <div class="code-card">
+                    <div class="code-card-header">
+                        <i class="fas fa-cube"></i>
+                        <h4>Переменные и типы</h4>
+                        <span class="code-tag">Основы</span>
+                    </div>
+                    <div class="code-card-body">
+                        <pre><span class="comment">// Динамическая переменная</span>
+<span class="keyword">let</span> a = <span class="number">10</span>;
+
+<span class="comment">// Статическая типизация</span>
+<span class="keyword">static let</span> name: <span class="type">String</span> = <span class="string">"Ivan"</span>;
+
+<span class="comment">// Константа с автовыводом</span>
+<span class="keyword">const static let</span> Pi: <span class="type">auto</span> = <span class="number">3.141592</span>;
+
+<span class="comment">// Union-тип</span>
+<span class="keyword">let</span> Number = <span class="type">Int</span> | <span class="type">Double</span>;
+<span class="keyword">static let</span> n: <span class="type">Number</span> = <span class="number">3.14</span>;
+
+<span class="comment">// Указатели</span>
+<span class="keyword">static let</span> n_ptr: <span class="type">ptr</span> = <span class="op">&</span>n;
+<span class="keyword">let</span> n_new = <span class="op">*</span>n_ptr;
+
+<span class="comment">// Массивы</span>
+<span class="keyword">let</span> arr = {<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>};
+<span class="keyword">let</span> typed_arr = [<span class="type">Int</span>, <span class="number">10</span>]{<span class="number">10</span>, <span class="number">20</span>};</pre>
+                    </div>
+                </div>
+                <div class="code-card">
+                    <div class="code-card-header">
+                        <i class="fas fa-code-branch"></i>
+                        <h4>Управляющие конструкции</h4>
+                        <span class="code-tag">Поток</span>
+                    </div>
+                    <div class="code-card-body">
+                        <pre><span class="comment">// if как выражение</span>
+<span class="keyword">let</span> a = <span class="keyword">if</span>(n == <span class="number">10</span>) { <span class="string">"+"</span> } 
+        <span class="keyword">else</span> { <span class="string">"-"</span> };
+
+<span class="comment">// Групповые модификаторы</span>
+<span class="keyword">const</span> {
+    <span class="keyword">let</span> a = <span class="number">10</span>;
+    <span class="keyword">let</span> b = <span class="keyword">true</span>;
+}
+
+<span class="comment">// Циклы</span>
+<span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i < <span class="number">10</span>; i = i + <span class="number">1</span>;) {
+    <span class="func">outln</span> i;
+}
+
+n = <span class="number">0</span>;
+<span class="keyword">do</span> {
+    n = n + <span class="number">1</span>;
+} <span class="keyword">while</span> (n < <span class="number">10</span>);</pre>
+                    </div>
+                </div>
+                <div class="code-card">
+                    <div class="code-card-header">
+                        <i class="fas fa-globe"></i>
+                        <h4>Замыкания и фабрики</h4>
+                        <span class="code-tag">Функции</span>
+                    </div>
+                    <div class="code-card-body">
+                        <pre><span class="comment">// Фабрика счётчиков</span>
+<span class="keyword">let</span> counter = <span class="func">lambda</span>() -> <span class="type">Lambda</span> {
+    <span class="keyword">namespace</span> {
+        <span class="keyword">global let</span> count = <span class="keyword">new</span> <span class="number">0</span>;
+        
+        <span class="keyword">let</span> increment = <span class="func">lambda</span>() -> <span class="type">Int</span> {
+            <span class="keyword">namespace</span> {
+                <span class="op">*</span>count = (<span class="op">*</span>count) + <span class="number">1</span>;
+                <span class="keyword">let</span> result = <span class="op">*</span>count;
+            }::result
+        };
+    }::increment
+};
+
+<span class="keyword">let</span> next = counter();
+<span class="keyword">let</span> next2 = counter();
+<span class="func">outln</span> next();  <span class="comment">// 1</span>
+<span class="func">outln</span> next();  <span class="comment">// 2</span>
+<span class="func">outln</span> next2(); <span class="comment">// 1</span>
+<span class="func">outln</span> next();  <span class="comment">// 3</span></pre>
+                    </div>
+                </div>
+                <div class="code-card">
+                    <div class="code-card-header">
+                        <i class="fas fa-clock"></i>
+                        <h4>Ленивые вычисления</h4>
+                        <span class="code-tag">Паттерны</span>
+                    </div>
+                    <div class="code-card-body">
+                        <pre><span class="keyword">struct</span> <span class="type">Lazy</span> {
+    <span class="keyword">static let</span> _computation: <span class="type">Lambda</span>?;
+    <span class="keyword">let</span> _result;
+    <span class="keyword">static let</span> _evaluated: <span class="type">Bool</span> = <span class="keyword">false</span>;
+    
+    <span class="keyword">func</span> <span class="func">force</span>() -> <span class="type">auto</span> {
+        <span class="keyword">if</span> (!<span class="keyword">this</span>._evaluated) {
+            <span class="keyword">this</span>._result = <span class="keyword">this</span>._computation();
+            <span class="keyword">this</span>._evaluated = <span class="keyword">true</span>;
+        }
+        <span class="keyword">ret</span> <span class="keyword">this</span>._result;
+    }
+}
+
+<span class="keyword">let</span> heavy = <span class="type">Lazy</span>(<span class="func">lambda</span>() -> <span class="type">Int</span> {
+    <span class="keyword">namespace</span> {
+        <span class="func">outln</span> <span class="string">"Computing..."</span>;
+    }::<span class="number">42</span>
+});
+
+<span class="func">outln</span> heavy.force(); <span class="comment">// Computing... 42</span>
+<span class="func">outln</span> heavy.force(); <span class="comment">// 42 (кэшировано)</span></pre>
+                    </div>
+                </div>
+                <div class="code-card">
+                    <div class="code-card-header">
+                        <i class="fas fa-box"></i>
+                        <h4>Структуры и ООП</h4>
+                        <span class="code-tag">Данные</span>
+                    </div>
+                    <div class="code-card-body">
+                        <pre><span class="keyword">struct</span> <span class="type">Person</span> {
+    <span class="keyword">static let</span> name: <span class="type">String</span>?;
+    <span class="keyword">static let</span> age: <span class="type">Int</span>?;
+    
+    <span class="keyword">func</span> <span class="func">__init__</span>(name: <span class="type">String</span>, age: <span class="type">Int</span>) 
+            -> <span class="func">typeof</span>(<span class="type">Person</span>) {
+        <span class="keyword">this</span>.name = name;
+        <span class="keyword">this</span>.age = age;
+        <span class="keyword">ret</span> <span class="keyword">this</span>;
+    }
+    
+    <span class="keyword">func</span> <span class="func">to_string</span>() -> <span class="type">String</span> {
+        <span class="keyword">ret</span> <span class="string">"Name: "</span> + <span class="keyword">this</span>.name;
+    }
+}
+
+<span class="keyword">let</span> p1 = <span class="type">Person</span>(<span class="string">"Ivan"</span>, <span class="number">19</span>);
+<span class="func">echo</span> p1.to_string();</pre>
+                    </div>
+                </div>
+                <div class="code-card">
+                    <div class="code-card-header">
+                        <i class="fas fa-trash-alt"></i>
+                        <h4>Управление памятью</h4>
+                        <span class="code-tag">Система</span>
+                    </div>
+                    <div class="code-card-body">
+                        <pre><span class="comment">// Выделение</span>
+<span class="keyword">let</span> p = <span class="keyword">new</span> <span class="number">10</span>;
+<span class="keyword">let</span> p2 = <span class="keyword">new</span><<span class="keyword">const</span>> <span class="string">"locked"</span>;
+<span class="keyword">let</span> p3 = <span class="keyword">new</span><<span class="func">static</span>(<span class="type">auto</span>), <span class="keyword">const</span>> <span class="number">3.14</span>;
+
+<span class="comment">// Удаление</span>
+<span class="keyword">let</span> a = <span class="number">100</span>;
+<span class="keyword">let</span> a_ptr = <span class="op">&</span>a;
+<span class="keyword">del</span> <span class="op">*</span>a_ptr; <span class="comment">// зануляет значение</span>
+<span class="func">echo</span> <span class="op">*</span>a_ptr; <span class="comment">// null</span>
+<span class="comment">// *a_ptr = 10; // ОШИБКА: адрес заблокирован</span>
+
+<span class="comment">// Удаление переменной из скоупа</span>
+<span class="keyword">del</span> a; <span class="comment">// a больше не существует</span></pre>
+                    </div>
+                </div>
+                <div class="code-card">
+                    <div class="code-card-header">
+                        <i class="fas fa-filter"></i>
+                        <h4>Функциональный стиль</h4>
+                        <span class="code-tag">FP</span>
+                    </div>
+                    <div class="code-card-body">
+                        <pre><span class="comment">// map для массива</span>
+<span class="keyword">let</span> map = <span class="func">lambda</span>(arr: [<span class="type">auto</span>, ~], 
+            f: <span class="type">Lambda</span>) -> [<span class="type">auto</span>, ~] {
+    <span class="keyword">namespace</span> {
+        <span class="keyword">let</span> result = {};
+        <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i < arr::len(); i = i + <span class="number">1</span>;) {
+            result::push(f(arr[i]));
+        };
+    }::result
+};
+
+<span class="keyword">let</span> numbers = {<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>};
+<span class="keyword">let</span> doubled = map(numbers, 
+    <span class="func">lambda</span>(x: <span class="type">Int</span>) -> <span class="type">Int</span> { x <span class="op">*</span> <span class="number">2</span> });
+<span class="comment">// {2, 4, 6, 8, 10}</span></pre>
+                    </div>
+                </div>
+                <div class="code-card">
+                    <div class="code-card-header">
+                        <i class="fas fa-archive"></i>
+                        <h4>Пространства имён</h4>
+                        <span class="code-tag">Модули</span>
+                    </div>
+                    <div class="code-card-body">
+                        <pre><span class="comment">// Именованное пространство</span>
+<span class="keyword">namespace</span> <span class="type">std</span> {
+    <span class="keyword">let</span> a = <span class="number">10</span>;
+    <span class="keyword">private let</span> p = <span class="number">10</span>;
+}
+
+<span class="func">outln</span> <span class="type">std</span>::a;
+<span class="type">std</span>::a = <span class="number">100</span>;
+
+<span class="comment">// Анонимное пространство</span>
+<span class="keyword">let</span> a = <span class="keyword">namespace</span> {
+    <span class="keyword">let</span> kill = <span class="number">10</span>;
+};
+<span class="func">outln</span> a::kill;
+
+<span class="comment">// С одним значением</span>
+<span class="keyword">final namespace</span> <span class="type">A</span> <span class="keyword">let</span> B = <span class="number">1000</span>;</pre>
+                    </div>
+                </div>
+                <div class="code-card">
+                    <div class="code-card-header">
+                        <i class="fas fa-link"></i>
+                        <h4>Композиция функций</h4>
+                        <span class="code-tag">Архитектура</span>
+                    </div>
+                    <div class="code-card-body">
+                        <pre><span class="comment">// Композиция функций</span>
+<span class="keyword">let</span> compose = <span class="func">lambda</span>(
+    f: <span class="type">Func</span>(<span class="type">Int</span>)-><span class="type">Int</span>, 
+    g: <span class="type">Func</span>(<span class="type">Int</span>)-><span class="type">Int</span>
+) -> <span class="type">Func</span>(<span class="type">Int</span>)-><span class="type">Int</span> {
+    <span class="keyword">ret</span> <span class="func">lambda</span>(x: <span class="type">Int</span>) -> <span class="type">Int</span> {
+        <span class="keyword">namespace</span> {
+            <span class="keyword">let</span> intermediate = f(x);
+        }::g(intermediate)
+    };
+};
+
+<span class="keyword">let</span> double = <span class="func">lambda</span>(x: <span class="type">Int</span>) -> <span class="type">Int</span> { x <span class="op">*</span> <span class="number">2</span> };
+<span class="keyword">let</span> square = <span class="func">lambda</span>(x: <span class="type">Int</span>) -> <span class="type">Int</span> { x <span class="op">*</span> x };
+
+<span class="keyword">let</span> pipeline = compose(double, square);
+<span class="func">outln</span> pipeline(<span class="number">5</span>); <span class="comment">// (5*2)^2 = 100</span></pre>
+                    </div>
+                </div>
+                <div class="code-card">
+                    <div class="code-card-header">
+                        <i class="fas fa-magic"></i>
+                        <h4>Метапрограммирование</h4>
+                        <span class="code-tag">Макросы</span>
+                    </div>
+                    <div class="code-card-body">
+                        <pre><span class="comment">// Макрос для дебага</span>
+#<span class="type">macro</span> debug_expr(expr) {
+    <span class="func">outln</span> <span class="string">"[DEBUG] "</span> + 
+           <span class="func">String</span>(<span class="op">#</span>expr) + 
+           <span class="string">" = "</span> + <span class="func">String</span>(expr);
+}
+
+<span class="keyword">let</span> x = <span class="number">42</span>;
+<span class="keyword">let</span> y = <span class="number">100</span>;
+<span class="func">debug_expr</span>(x + y); 
+<span class="comment">// [DEBUG] x + y = 142</span>
+
+<span class="comment">// Компиляция условного кода</span>
+#<span class="type">define</span> PLATFORM_WINDOWS
+#<span class="keyword">ifdef</span> PLATFORM_WINDOWS
+    <span class="func">outln</span> <span class="string">"Running on Windows"</span>;
+#<span class="keyword">endif</span></pre>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -704,12 +1105,12 @@
             </div>
             <h3 style="margin: 2rem 0 1rem;">Ключевые возможности IDE</h3>
             <div class="ide-grid">
-                <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-paint-roller"></i><h4>Подсветка синтаксиса</h4><p>Не просто текст, а магия</p></div><div class="flip-card-back"><div class="card-icon"><i class="fas fa-paint-roller"></i></div><div class="card-label">Визуализация кода</div><div class="card-value">Подсветка синтаксиса</div><div class="card-desc">Кастомный лексер для всех конструкций Lumen позволяет подсвечивать каждую лексему языка по отдельности.</div></div></div></div>
-                <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-lightbulb"></i><h4>Автодополнение</h4><p>Иконки типов, подсказки</p></div><div class="flip-card-back"><div class="card-icon"><i class="fas fa-lightbulb"></i></div><div class="card-label">IntelliSense</div><div class="card-value">Автодополнение кода</div><div class="card-desc">Подсказки с иконками типов (K, M, T, L, D, S, F) на основе анализа.</div></div></div></div>
-                <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-server"></i><h4>Языковой сервер</h4><p>Анализ в реальном времени</p></div><div class="flip-card-back"><div class="card-icon"><i class="fas fa-server"></i></div><div class="card-label">Анализ кода</div><div class="card-value">Языковой сервер</div><div class="card-desc">Фоновая проверка ошибок, семантический анализ в реальном времени. Это позволяет увидеть результат программы не запуская ее.</div></div></div></div>
-                <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-bug"></i><h4>Визуализация ошибок</h4><p>Ошибка? — не беда</p></div><div class="flip-card-back"><div class="card-icon"><i class="fas fa-bug"></i></div><div class="card-label">Диагностика</div><div class="card-value">Визуализация ошибок</div><div class="card-desc">Подсветка на полях, всплывающие подсказки с пояснением прямо в строках кода.</div></div></div></div>
-                <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-outdent"></i><h4>Сворачивание кода <span class="beta-badge" style="background:rgba(203,166,247,0.2); border-color:#cba6f7; margin-left:0.3rem;">Beta</span></h4><p>Code folding</p></div><div class="flip-card-back"><div class="card-icon"><i class="fas fa-outdent"></i></div><div class="card-label">Навигация</div><div class="card-value">Сворачивание кода <span class="beta-badge">Beta</span></div><div class="card-desc">Code folding для удобной навигации в больших файлах.</div></div></div></div>
-                <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-palette"></i><h4>Кастомное меню / темы</h4><p>Светлая / тёмная тема</p></div><div class="flip-card-back"><div class="card-icon"><i class="fas fa-palette"></i></div><div class="card-label">Интерфейс</div><div class="card-value">Кастомное меню / темы</div><div class="card-desc">Закругленные меню, анимированные кнопки, большое количество красивых тем.</div></div></div></div>
+                <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-paint-roller"></i><h4>Подсветка синтаксиса</h4><p>Не просто текст, а магия</p><span class="tap-hint">Нажмите, чтобы узнать подробнее</span></div><div class="flip-card-back"><div class="card-icon"><i class="fas fa-paint-roller"></i></div><div class="card-label">Визуализация кода</div><div class="card-value">Подсветка синтаксиса</div><div class="card-desc">Кастомный лексер для всех конструкций Lumen позволяет подсвечивать каждую лексему языка по отдельности.</div></div></div></div>
+                <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-lightbulb"></i><h4>Автодополнение</h4><p>Иконки типов, подсказки</p><span class="tap-hint">Нажмите, чтобы узнать подробнее</span></div><div class="flip-card-back"><div class="card-icon"><i class="fas fa-lightbulb"></i></div><div class="card-label">IntelliSense</div><div class="card-value">Автодополнение кода</div><div class="card-desc">Подсказки с иконками типов (K, M, T, L, D, S, F) на основе анализа.</div></div></div></div>
+                <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-server"></i><h4>Языковой сервер</h4><p>Анализ в реальном времени</p><span class="tap-hint">Нажмите, чтобы узнать подробнее</span></div><div class="flip-card-back"><div class="card-icon"><i class="fas fa-server"></i></div><div class="card-label">Анализ кода</div><div class="card-value">Языковой сервер</div><div class="card-desc">Фоновая проверка ошибок, семантический анализ в реальном времени. Это позволяет увидеть результат программы не запуская ее.</div></div></div></div>
+                <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-bug"></i><h4>Визуализация ошибок</h4><p>Ошибка? — не беда</p><span class="tap-hint">Нажмите, чтобы узнать подробнее</span></div><div class="flip-card-back"><div class="card-icon"><i class="fas fa-bug"></i></div><div class="card-label">Диагностика</div><div class="card-value">Визуализация ошибок</div><div class="card-desc">Подсветка на полях, всплывающие подсказки с пояснением прямо в строках кода.</div></div></div></div>
+                <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-outdent"></i><h4>Сворачивание кода</h4><p>Code folding</p><span class="tap-hint">Нажмите, чтобы узнать подробнее</span></div><div class="flip-card-back"><div class="card-icon"><i class="fas fa-outdent"></i></div><div class="card-label">Навигация</div><div class="card-value">Сворачивание кода</div><div class="card-desc">Code folding для удобной навигации в больших файлах.</div></div></div></div>
+                <div class="flip-card"><div class="flip-card-inner"><div class="flip-card-front"><i class="fas fa-palette"></i><h4>Кастомное меню / темы</h4><p>Светлая / тёмная тема</p><span class="tap-hint">Нажмите, чтобы узнать подробнее</span></div><div class="flip-card-back"><div class="card-icon"><i class="fas fa-palette"></i></div><div class="card-label">Интерфейс</div><div class="card-value">Кастомное меню / темы</div><div class="card-desc">Закругленные меню, анимированные кнопки, большое количество красивых тем.</div></div></div></div>
             </div>
             <div class="specs-wrapper" style="margin-top: 2rem;">
                 <div class="specs-title" style="display: flex; align-items: center; gap: 0.75rem; font-size: 1.4rem; font-weight: 700; margin-bottom: 1.5rem;"><i class="fas fa-microchip"></i><span>Технические характеристики Lumen IDE</span></div>
@@ -743,7 +1144,7 @@
 <button class="scroll-top" id="scrollTopBtn"><i class="fas fa-arrow-up"></i></button>
 
 <script>
-    // Анимация частиц только для ширины > 768px (на мобильных canvas скрыт через CSS)
+    // Анимация частиц только для ширины > 768px
     if (window.innerWidth > 768) {
         const canvas = document.getElementById('networkCanvas');
         if (canvas) {
@@ -866,47 +1267,29 @@
     document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
     document.querySelectorAll('.reveal').forEach(el => { if(el.getBoundingClientRect().top < window.innerHeight-100) el.classList.add('visible'); });
 
-    // Мобильные карточки: переворот при прокрутке, когда карточка находится в центральной зоне (y > 200 и y < window.innerHeight - 200)
-    if (window.innerWidth <= 768) {
-        const flipCards = document.querySelectorAll('.flip-card');
-        // Храним флаг, была ли карточка уже перевёрнута
-        const flippedStatus = new Map();
-        
-        function checkAndFlipCards() {
-            const viewportHeight = window.innerHeight;
-            const topMargin = 200;
-            const bottomMargin = 200;
-            
-            flipCards.forEach(card => {
-                if (flippedStatus.get(card)) return; // уже перевернута
-                
-                const rect = card.getBoundingClientRect();
-                const cardTop = rect.top;
-                const cardBottom = rect.bottom;
-                
-                // Условие: верхняя граница карточки ниже topMargin и нижняя граница выше (viewportHeight - bottomMargin)
-                if (cardTop > topMargin && cardBottom < viewportHeight - bottomMargin) {
-                    card.classList.add('flipped');
-                    flippedStatus.set(card, true);
-                }
-            });
-        }
-        
-        // Используем throttle для оптимизации
-        let ticking = false;
-        window.addEventListener('scroll', () => {
-            if (!ticking) {
-                requestAnimationFrame(() => {
-                    checkAndFlipCards();
-                    ticking = false;
-                });
-                ticking = true;
-            }
+    // Flip-карточки: клик для мобильных, ховер для десктопа
+    const flipCards = document.querySelectorAll('.flip-card');
+    
+    // Всегда добавляем обработчик клика (работает и на мобильных и на десктопе)
+    flipCards.forEach(card => {
+        card.addEventListener('click', function(e) {
+            // На десктопе ховер уже работает, но клик тоже пусть переключает для надёжности
+            this.classList.toggle('flipped');
         });
-        
-        // Проверяем сразу после загрузки
-        window.addEventListener('load', checkAndFlipCards);
-        checkAndFlipCards(); // дополнительно на случай, если load уже произошёл
+    });
+
+    // Для десктопа: при уходе мыши сбрасываем flipped, чтобы ховер работал корректно
+    if (window.innerWidth > 768) {
+        flipCards.forEach(card => {
+            card.addEventListener('mouseleave', function() {
+                // Небольшая задержка, чтобы не конфликтовать с кликом
+                setTimeout(() => {
+                    if (!card.matches(':hover')) {
+                        card.classList.remove('flipped');
+                    }
+                }, 100);
+            });
+        });
     }
 </script>
 </body>
