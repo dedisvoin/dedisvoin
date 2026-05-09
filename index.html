@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        * {
+        *, *::before, *::after {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -24,8 +24,11 @@
             scroll-behavior: smooth;
             position: relative;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
+        /* Статичный фон вместо анимаций для мобильных */
         .arabesque-bg {
             position: fixed;
             top: 0;
@@ -38,19 +41,6 @@
                 repeating-linear-gradient(45deg, rgba(137, 180, 250, 0.03) 0px, rgba(137, 180, 250, 0.03) 2px, transparent 2px, transparent 8px),
                 repeating-linear-gradient(135deg, rgba(203, 166, 247, 0.03) 0px, rgba(203, 166, 247, 0.03) 2px, transparent 2px, transparent 8px);
             opacity: 0.5;
-        }
-        .arabesque-bg::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.1"><path fill="none" stroke="%2389b4fa" stroke-width="0.6" d="M50,10 L60,25 L50,40 L40,25 Z M50,10 L40,25 L30,40 L40,55 L50,70 L60,55 L70,40 L60,25 Z M50,40 L60,55 L50,70 L40,55 Z M30,40 L40,55 L30,70 L20,55 Z M70,40 L60,55 L70,70 L80,55 Z M50,70 L60,85 L50,100 L40,85 Z M50,70 L40,85 L30,100 L40,115 L50,130 L60,115 L70,100 L60,85 Z"/></svg>');
-            background-repeat: repeat;
-            background-size: 60px 60px;
-            opacity: 0.2;
-            pointer-events: none;
         }
 
         .blur-bg {
@@ -68,7 +58,7 @@
             position: absolute;
             border-radius: 50%;
             filter: blur(80px);
-            will-change: transform;
+            will-change: auto;
         }
         .blur-circle-1 { background: radial-gradient(circle, #cba6f7, #89b4fa); opacity: 0.2; }
         .blur-circle-2 { background: radial-gradient(circle, #f5c2e7, #b4befe); opacity: 0.18; }
@@ -82,15 +72,16 @@
             left: 0;
             width: 100%;
             height: 100%;
-            display: block;
+            display: none;
             z-index: -1;
             pointer-events: none;
             opacity: 0.45;
         }
 
-        @media (max-width: 768px) {
+        /* Canvas только на десктопе */
+        @media (min-width: 769px) {
             #networkCanvas {
-                display: none;
+                display: block;
             }
         }
 
@@ -156,6 +147,7 @@
             perspective: 1500px;
             cursor: pointer;
             min-height: 280px;
+            -webkit-tap-highlight-color: transparent;
         }
         .flip-card-inner {
             position: relative;
@@ -166,6 +158,7 @@
             transform-style: preserve-3d;
             border-radius: var(--radius-card);
             transform: rotateY(180deg);
+            will-change: transform;
         }
         .flip-card.flipped .flip-card-inner {
             transform: rotateY(0deg);
@@ -175,9 +168,11 @@
             width: 100%;
             height: 100%;
             backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
             border-radius: var(--radius-card);
             padding: 1.5rem;
             backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             background: rgba(30, 30, 46, 0.85);
             border: 1px solid rgba(69, 71, 90, 0.5);
             transition: all 0.3s ease;
@@ -307,6 +302,7 @@
 
         .navbar {
             backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             background: rgba(24, 24, 37, 0.9);
             border-bottom: 1px solid rgba(69, 71, 90, 0.8);
             position: sticky;
@@ -369,6 +365,7 @@
                 width: 100%;
                 background: rgba(24, 24, 37, 0.98);
                 backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
                 padding: 1.5rem;
                 gap: 1.2rem;
                 box-shadow: var(--shadow-md);
@@ -413,6 +410,7 @@
         .btn-outline {
             background: rgba(30, 30, 46, 0.7);
             backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
             border: 1px solid #45475a;
             color: #cdd6f4;
         }
@@ -451,6 +449,7 @@
             padding: 2rem;
             text-align: center;
             backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             background: rgba(30, 30, 46, 0.75);
             border: 1px solid rgba(69, 71, 90, 0.5);
             margin: 2rem 0;
@@ -481,6 +480,7 @@
             padding: 0.5rem 1rem;
             background: rgba(49, 50, 68, 0.8);
             backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
             border-radius: 40px;
             display: inline-flex;
             align-items: center;
@@ -498,6 +498,7 @@
             border-radius: 30px;
             font-size: 0.8rem;
             backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
             background: rgba(30, 30, 46, 0.75);
             border: 1px solid rgba(69, 71, 90, 0.5);
         }
@@ -519,6 +520,7 @@
             border-radius: 1.25rem;
             padding: 1.25rem;
             backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
             background: rgba(30, 30, 46, 0.7);
             border: 1px solid rgba(69, 71, 90, 0.5);
             display: flex;
@@ -562,6 +564,7 @@
             text-align: center;
             font-size: 0.85rem;
             backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
             background: rgba(24, 24, 37, 0.7);
         }
         .reveal {
@@ -595,6 +598,7 @@
             right: 2rem;
             background: rgba(137, 180, 250, 0.85);
             backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             color: #1e1e2e;
             width: 48px;
             height: 48px;
@@ -609,6 +613,7 @@
             z-index: 99;
             border: none;
             font-size: 1.2rem;
+            will-change: auto;
         }
         .scroll-top.visible {
             opacity: 1;
@@ -629,6 +634,7 @@
 
         .code-card {
             backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             background: rgba(30, 30, 46, 0.85);
             border: 1px solid rgba(69, 71, 90, 0.5);
             border-radius: 1rem;
@@ -668,6 +674,7 @@
         .code-card-body {
             padding: 1rem 1.25rem;
             overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
         .code-card-body pre {
             margin: 0;
@@ -723,11 +730,11 @@
 
 <div class="arabesque-bg"></div>
 <div class="blur-bg">
-    <div class="blur-circle blur-circle-1"></div>
-    <div class="blur-circle blur-circle-2"></div>
-    <div class="blur-circle blur-circle-3"></div>
-    <div class="blur-circle blur-circle-4"></div>
-    <div class="blur-circle blur-circle-5"></div>
+    <div class="blur-circle blur-circle-1" style="left:-100px;top:-100px;width:450px;height:450px"></div>
+    <div class="blur-circle blur-circle-2" style="left:calc(100vw - 500px);top:calc(100vh - 500px);width:550px;height:550px"></div>
+    <div class="blur-circle blur-circle-3" style="left:50vw;top:30vh;width:400px;height:400px"></div>
+    <div class="blur-circle blur-circle-4" style="left:20vw;top:60vh;width:380px;height:380px"></div>
+    <div class="blur-circle blur-circle-5" style="left:70vw;top:20vh;width:420px;height:420px"></div>
 </div>
 <canvas id="networkCanvas"></canvas>
 
@@ -796,14 +803,7 @@
             <p class="code-section-intro">От простых конструкций до продвинутых паттернов — посмотрите, насколько выразителен Lumen.</p>
             
             <div class="code-examples-grid">
-                <div class="code-card">
-                    <div class="code-card-header">
-                        <i class="fas fa-cube"></i>
-                        <h4>Переменные и типы</h4>
-                        <span class="code-tag">Основы</span>
-                    </div>
-                    <div class="code-card-body">
-                        <pre><span class="comment">// Динамическая переменная</span>
+                <div class="code-card"><div class="code-card-header"><i class="fas fa-cube"></i><h4>Переменные и типы</h4><span class="code-tag">Основы</span></div><div class="code-card-body"><pre><span class="comment">// Динамическая переменная</span>
 <span class="keyword">let</span> a = <span class="number">10</span>;
 
 <span class="comment">// Статическая типизация</span>
@@ -822,17 +822,8 @@
 
 <span class="comment">// Массивы</span>
 <span class="keyword">let</span> arr = {<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>};
-<span class="keyword">let</span> typed_arr = [<span class="type">Int</span>, <span class="number">10</span>]{<span class="number">10</span>, <span class="number">20</span>};</pre>
-                    </div>
-                </div>
-                <div class="code-card">
-                    <div class="code-card-header">
-                        <i class="fas fa-code-branch"></i>
-                        <h4>Управляющие конструкции</h4>
-                        <span class="code-tag">Поток</span>
-                    </div>
-                    <div class="code-card-body">
-                        <pre><span class="comment">// if как выражение</span>
+<span class="keyword">let</span> typed_arr = [<span class="type">Int</span>, <span class="number">10</span>]{<span class="number">10</span>, <span class="number">20</span>};</pre></div></div>
+                <div class="code-card"><div class="code-card-header"><i class="fas fa-code-branch"></i><h4>Управляющие конструкции</h4><span class="code-tag">Поток</span></div><div class="code-card-body"><pre><span class="comment">// if как выражение</span>
 <span class="keyword">let</span> a = <span class="keyword">if</span>(n == <span class="number">10</span>) { <span class="string">"+"</span> } 
         <span class="keyword">else</span> { <span class="string">"-"</span> };
 
@@ -850,17 +841,8 @@
 n = <span class="number">0</span>;
 <span class="keyword">do</span> {
     n = n + <span class="number">1</span>;
-} <span class="keyword">while</span> (n < <span class="number">10</span>);</pre>
-                    </div>
-                </div>
-                <div class="code-card">
-                    <div class="code-card-header">
-                        <i class="fas fa-globe"></i>
-                        <h4>Замыкания и фабрики</h4>
-                        <span class="code-tag">Функции</span>
-                    </div>
-                    <div class="code-card-body">
-                        <pre><span class="comment">// Фабрика счётчиков</span>
+} <span class="keyword">while</span> (n < <span class="number">10</span>);</pre></div></div>
+                <div class="code-card"><div class="code-card-header"><i class="fas fa-globe"></i><h4>Замыкания и фабрики</h4><span class="code-tag">Функции</span></div><div class="code-card-body"><pre><span class="comment">// Фабрика счётчиков</span>
 <span class="keyword">let</span> counter = <span class="func">lambda</span>() -> <span class="type">Lambda</span> {
     <span class="keyword">namespace</span> {
         <span class="keyword">global let</span> count = <span class="keyword">new</span> <span class="number">0</span>;
@@ -879,17 +861,8 @@ n = <span class="number">0</span>;
 <span class="func">outln</span> next();  <span class="comment">// 1</span>
 <span class="func">outln</span> next();  <span class="comment">// 2</span>
 <span class="func">outln</span> next2(); <span class="comment">// 1</span>
-<span class="func">outln</span> next();  <span class="comment">// 3</span></pre>
-                    </div>
-                </div>
-                <div class="code-card">
-                    <div class="code-card-header">
-                        <i class="fas fa-clock"></i>
-                        <h4>Ленивые вычисления</h4>
-                        <span class="code-tag">Паттерны</span>
-                    </div>
-                    <div class="code-card-body">
-                        <pre><span class="keyword">struct</span> <span class="type">Lazy</span> {
+<span class="func">outln</span> next();  <span class="comment">// 3</span></pre></div></div>
+                <div class="code-card"><div class="code-card-header"><i class="fas fa-clock"></i><h4>Ленивые вычисления</h4><span class="code-tag">Паттерны</span></div><div class="code-card-body"><pre><span class="keyword">struct</span> <span class="type">Lazy</span> {
     <span class="keyword">static let</span> _computation: <span class="type">Lambda</span>?;
     <span class="keyword">let</span> _result;
     <span class="keyword">static let</span> _evaluated: <span class="type">Bool</span> = <span class="keyword">false</span>;
@@ -910,17 +883,8 @@ n = <span class="number">0</span>;
 });
 
 <span class="func">outln</span> heavy.force(); <span class="comment">// Computing... 42</span>
-<span class="func">outln</span> heavy.force(); <span class="comment">// 42 (кэшировано)</span></pre>
-                    </div>
-                </div>
-                <div class="code-card">
-                    <div class="code-card-header">
-                        <i class="fas fa-box"></i>
-                        <h4>Структуры и ООП</h4>
-                        <span class="code-tag">Данные</span>
-                    </div>
-                    <div class="code-card-body">
-                        <pre><span class="keyword">struct</span> <span class="type">Person</span> {
+<span class="func">outln</span> heavy.force(); <span class="comment">// 42 (кэшировано)</span></pre></div></div>
+                <div class="code-card"><div class="code-card-header"><i class="fas fa-box"></i><h4>Структуры и ООП</h4><span class="code-tag">Данные</span></div><div class="code-card-body"><pre><span class="keyword">struct</span> <span class="type">Person</span> {
     <span class="keyword">static let</span> name: <span class="type">String</span>?;
     <span class="keyword">static let</span> age: <span class="type">Int</span>?;
     
@@ -937,17 +901,8 @@ n = <span class="number">0</span>;
 }
 
 <span class="keyword">let</span> p1 = <span class="type">Person</span>(<span class="string">"Ivan"</span>, <span class="number">19</span>);
-<span class="func">echo</span> p1.to_string();</pre>
-                    </div>
-                </div>
-                <div class="code-card">
-                    <div class="code-card-header">
-                        <i class="fas fa-trash-alt"></i>
-                        <h4>Управление памятью</h4>
-                        <span class="code-tag">Система</span>
-                    </div>
-                    <div class="code-card-body">
-                        <pre><span class="comment">// Выделение</span>
+<span class="func">echo</span> p1.to_string();</pre></div></div>
+                <div class="code-card"><div class="code-card-header"><i class="fas fa-trash-alt"></i><h4>Управление памятью</h4><span class="code-tag">Система</span></div><div class="code-card-body"><pre><span class="comment">// Выделение</span>
 <span class="keyword">let</span> p = <span class="keyword">new</span> <span class="number">10</span>;
 <span class="keyword">let</span> p2 = <span class="keyword">new</span><<span class="keyword">const</span>> <span class="string">"locked"</span>;
 <span class="keyword">let</span> p3 = <span class="keyword">new</span><<span class="func">static</span>(<span class="type">auto</span>), <span class="keyword">const</span>> <span class="number">3.14</span>;
@@ -960,17 +915,8 @@ n = <span class="number">0</span>;
 <span class="comment">// *a_ptr = 10; // ОШИБКА: адрес заблокирован</span>
 
 <span class="comment">// Удаление переменной из скоупа</span>
-<span class="keyword">del</span> a; <span class="comment">// a больше не существует</span></pre>
-                    </div>
-                </div>
-                <div class="code-card">
-                    <div class="code-card-header">
-                        <i class="fas fa-filter"></i>
-                        <h4>Функциональный стиль</h4>
-                        <span class="code-tag">FP</span>
-                    </div>
-                    <div class="code-card-body">
-                        <pre><span class="comment">// map для массива</span>
+<span class="keyword">del</span> a; <span class="comment">// a больше не существует</span></pre></div></div>
+                <div class="code-card"><div class="code-card-header"><i class="fas fa-filter"></i><h4>Функциональный стиль</h4><span class="code-tag">FP</span></div><div class="code-card-body"><pre><span class="comment">// map для массива</span>
 <span class="keyword">let</span> map = <span class="func">lambda</span>(arr: [<span class="type">auto</span>, ~], 
             f: <span class="type">Lambda</span>) -> [<span class="type">auto</span>, ~] {
     <span class="keyword">namespace</span> {
@@ -984,17 +930,8 @@ n = <span class="number">0</span>;
 <span class="keyword">let</span> numbers = {<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>};
 <span class="keyword">let</span> doubled = map(numbers, 
     <span class="func">lambda</span>(x: <span class="type">Int</span>) -> <span class="type">Int</span> { x <span class="op">*</span> <span class="number">2</span> });
-<span class="comment">// {2, 4, 6, 8, 10}</span></pre>
-                    </div>
-                </div>
-                <div class="code-card">
-                    <div class="code-card-header">
-                        <i class="fas fa-archive"></i>
-                        <h4>Пространства имён</h4>
-                        <span class="code-tag">Модули</span>
-                    </div>
-                    <div class="code-card-body">
-                        <pre><span class="comment">// Именованное пространство</span>
+<span class="comment">// {2, 4, 6, 8, 10}</span></pre></div></div>
+                <div class="code-card"><div class="code-card-header"><i class="fas fa-archive"></i><h4>Пространства имён</h4><span class="code-tag">Модули</span></div><div class="code-card-body"><pre><span class="comment">// Именованное пространство</span>
 <span class="keyword">namespace</span> <span class="type">std</span> {
     <span class="keyword">let</span> a = <span class="number">10</span>;
     <span class="keyword">private let</span> p = <span class="number">10</span>;
@@ -1010,17 +947,8 @@ n = <span class="number">0</span>;
 <span class="func">outln</span> a::kill;
 
 <span class="comment">// С одним значением</span>
-<span class="keyword">final namespace</span> <span class="type">A</span> <span class="keyword">let</span> B = <span class="number">1000</span>;</pre>
-                    </div>
-                </div>
-                <div class="code-card">
-                    <div class="code-card-header">
-                        <i class="fas fa-link"></i>
-                        <h4>Композиция функций</h4>
-                        <span class="code-tag">Архитектура</span>
-                    </div>
-                    <div class="code-card-body">
-                        <pre><span class="comment">// Композиция функций</span>
+<span class="keyword">final namespace</span> <span class="type">A</span> <span class="keyword">let</span> B = <span class="number">1000</span>;</pre></div></div>
+                <div class="code-card"><div class="code-card-header"><i class="fas fa-link"></i><h4>Композиция функций</h4><span class="code-tag">Архитектура</span></div><div class="code-card-body"><pre><span class="comment">// Композиция функций</span>
 <span class="keyword">let</span> compose = <span class="func">lambda</span>(
     f: <span class="type">Func</span>(<span class="type">Int</span>)-><span class="type">Int</span>, 
     g: <span class="type">Func</span>(<span class="type">Int</span>)-><span class="type">Int</span>
@@ -1036,17 +964,8 @@ n = <span class="number">0</span>;
 <span class="keyword">let</span> square = <span class="func">lambda</span>(x: <span class="type">Int</span>) -> <span class="type">Int</span> { x <span class="op">*</span> x };
 
 <span class="keyword">let</span> pipeline = compose(double, square);
-<span class="func">outln</span> pipeline(<span class="number">5</span>); <span class="comment">// (5*2)^2 = 100</span></pre>
-                    </div>
-                </div>
-                <div class="code-card">
-                    <div class="code-card-header">
-                        <i class="fas fa-magic"></i>
-                        <h4>Метапрограммирование</h4>
-                        <span class="code-tag">Макросы</span>
-                    </div>
-                    <div class="code-card-body">
-                        <pre><span class="comment">// Макрос для дебага</span>
+<span class="func">outln</span> pipeline(<span class="number">5</span>); <span class="comment">// (5*2)^2 = 100</span></pre></div></div>
+                <div class="code-card"><div class="code-card-header"><i class="fas fa-magic"></i><h4>Метапрограммирование</h4><span class="code-tag">Макросы</span></div><div class="code-card-body"><pre><span class="comment">// Макрос для дебага</span>
 #<span class="type">macro</span> debug_expr(expr) {
     <span class="func">outln</span> <span class="string">"[DEBUG] "</span> + 
            <span class="func">String</span>(<span class="op">#</span>expr) + 
@@ -1062,9 +981,7 @@ n = <span class="number">0</span>;
 #<span class="type">define</span> PLATFORM_WINDOWS
 #<span class="keyword">ifdef</span> PLATFORM_WINDOWS
     <span class="func">outln</span> <span class="string">"Running on Windows"</span>;
-#<span class="keyword">endif</span></pre>
-                    </div>
-                </div>
+#<span class="keyword">endif</span></pre></div></div>
             </div>
         </div>
     </section>
@@ -1144,97 +1061,105 @@ n = <span class="number">0</span>;
 <button class="scroll-top" id="scrollTopBtn"><i class="fas fa-arrow-up"></i></button>
 
 <script>
-    // Анимация частиц только для ширины > 768px
-    if (window.innerWidth > 768) {
+    // ========== ОПТИМИЗАЦИЯ: минимум анимаций на мобильных ==========
+    const isMobile = window.innerWidth <= 768;
+    
+    // Canvas только на десктопе
+    if (!isMobile) {
         const canvas = document.getElementById('networkCanvas');
-        if (canvas) {
-            let ctx = canvas.getContext('2d');
-            let particles = [];
-            const particleCount = 70;
-            const connectionDistance = 150;
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        const particleCount = 50; // уменьшено с 70
+        const connectionDistance = 130;
+        let animFrameId;
 
-            function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-            class Particle {
-                constructor(x, y, vx, vy) { this.x = x; this.y = y; this.vx = vx; this.vy = vy; this.radius = 1.2; }
-                update() {
-                    this.x += this.vx; this.y += this.vy;
-                    if (this.x < 0) { this.x = 0; this.vx = -this.vx; }
-                    if (this.x > canvas.width) { this.x = canvas.width; this.vx = -this.vx; }
-                    if (this.y < 0) { this.y = 0; this.vy = -this.vy; }
-                    if (this.y > canvas.height) { this.y = canvas.height; this.vy = -this.vy; }
-                }
-                draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fillStyle = '#89b4fa'; ctx.fill(); }
+        function resizeCanvas() { 
+            canvas.width = window.innerWidth; 
+            canvas.height = window.innerHeight; 
+        }
+        
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.radius = 1;
             }
-            function initParticles() {
-                particles = [];
-                for (let i = 0; i < particleCount; i++) {
-                    let x = Math.random() * canvas.width, y = Math.random() * canvas.height;
-                    let vx = (Math.random() - 0.5) * 0.6, vy = (Math.random() - 0.5) * 0.6;
-                    particles.push(new Particle(x, y, vx, vy));
-                }
+            update() {
+                this.x += this.vx; 
+                this.y += this.vy;
+                if (this.x < 0 || this.x > canvas.width) this.vx = -this.vx;
+                if (this.y < 0 || this.y > canvas.height) this.vy = -this.vy;
             }
-            function drawLines() {
-                for (let i = 0; i < particles.length; i++) {
-                    for (let j = i + 1; j < particles.length; j++) {
-                        let dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y;
-                        let distance = Math.sqrt(dx * dx + dy * dy);
-                        if (distance < connectionDistance) {
-                            let opacity = 0.08 * (1 - distance / connectionDistance);
-                            ctx.beginPath();
-                            ctx.moveTo(particles[i].x, particles[i].y);
-                            ctx.lineTo(particles[j].x, particles[j].y);
-                            ctx.strokeStyle = `rgba(137, 180, 250, ${opacity * 1.2})`;
-                            ctx.lineWidth = 0.8;
-                            ctx.stroke();
-                        }
+            draw() { 
+                ctx.beginPath(); 
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); 
+                ctx.fillStyle = 'rgba(137, 180, 250, 0.6)'; 
+                ctx.fill(); 
+            }
+        }
+
+        function initParticles() {
+            particles = Array.from({ length: particleCount }, () => new Particle());
+        }
+
+        function drawLines() {
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = dx * dx + dy * dy;
+                    if (dist < connectionDistance * connectionDistance) {
+                        const opacity = 0.06 * (1 - Math.sqrt(dist) / connectionDistance);
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(137, 180, 250, ${opacity})`;
+                        ctx.lineWidth = 0.6;
+                        ctx.stroke();
                     }
                 }
             }
-            function animateNetwork() {
-                if (!ctx) return;
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                for (let p of particles) { p.update(); p.draw(); }
-                drawLines();
-                requestAnimationFrame(animateNetwork);
-            }
-            window.addEventListener('resize', () => { resizeCanvas(); initParticles(); });
-            resizeCanvas(); initParticles(); animateNetwork();
         }
+
+        function animateNetwork() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            drawLines();
+            animFrameId = requestAnimationFrame(animateNetwork);
+        }
+
+        // Остановка при скрытии вкладки
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                cancelAnimationFrame(animFrameId);
+            } else {
+                animFrameId = requestAnimationFrame(animateNetwork);
+            }
+        });
+
+        resizeCanvas(); 
+        initParticles(); 
+        animFrameId = requestAnimationFrame(animateNetwork);
+        
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                resizeCanvas(); 
+                initParticles();
+            }, 200);
+        });
     }
 
-    // Анимация размытых кругов
-    const circles = document.querySelectorAll('.blur-circle');
-    const circleParams = [
-        { x: -100, y: -100, size: 450, vx: 0.2, vy: 0.15, angle: 0, minSize: 350, maxSize: 600 },
-        { x: window.innerWidth - 500, y: window.innerHeight - 500, size: 550, vx: -0.2, vy: 0.25, angle: 0.5, minSize: 450, maxSize: 700 },
-        { x: window.innerWidth * 0.5, y: window.innerHeight * 0.3, size: 400, vx: 0.25, vy: -0.2, angle: 1, minSize: 320, maxSize: 550 },
-        { x: window.innerWidth * 0.2, y: window.innerHeight * 0.6, size: 380, vx: 0.15, vy: 0.3, angle: 1.5, minSize: 300, maxSize: 500 },
-        { x: window.innerWidth * 0.7, y: window.innerHeight * 0.2, size: 420, vx: -0.25, vy: -0.18, angle: 2, minSize: 350, maxSize: 580 }
-    ];
-    function updateCircles() {
-        const width = window.innerWidth, height = window.innerHeight;
-        circles.forEach((circle, index) => {
-            const p = circleParams[index];
-            if (!p) return;
-            p.x += p.vx; p.y += p.vy;
-            p.angle += 0.008;
-            let sizeFactor = 0.7 + Math.sin(p.angle) * 0.3;
-            let newSize = p.minSize + (p.maxSize - p.minSize) * sizeFactor;
-            if (p.x < -newSize * 0.4) p.x = -newSize * 0.4;
-            if (p.x > width - newSize * 0.4) p.x = width - newSize * 0.4;
-            if (p.y < -newSize * 0.4) p.y = -newSize * 0.4;
-            if (p.y > height - newSize * 0.4) p.y = height - newSize * 0.4;
-            circle.style.left = p.x + 'px'; circle.style.top = p.y + 'px';
-            circle.style.width = newSize + 'px'; circle.style.height = newSize + 'px';
-        });
-        requestAnimationFrame(updateCircles);
-    }
-    updateCircles();
+    // Убираем анимацию blur-кругов на мобильных — оставляем статичные позиции
+    // (уже заданы инлайн-стилями в HTML)
 
     // Мобильное меню
     const menuToggle = document.getElementById('menuToggle');
     const navLinksMenu = document.getElementById('navLinks');
-    if (menuToggle) menuToggle.addEventListener('click', () => navLinksMenu.classList.toggle('active'));
+    menuToggle?.addEventListener('click', () => navLinksMenu.classList.toggle('active'));
 
     // Плавная прокрутка
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -1245,7 +1170,7 @@ n = <span class="number">0</span>;
             if (target) {
                 e.preventDefault();
                 target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                if (navLinksMenu.classList.contains('active')) navLinksMenu.classList.remove('active');
+                navLinksMenu.classList.remove('active');
             }
         });
     });
@@ -1255,39 +1180,61 @@ n = <span class="number">0</span>;
         alert("Скачивание Lumen IDE v1.05b для Windows 64-bit\nРазмер: ~85 MB\nУстановщик готов к запуску.");
     });
 
-    // Кнопка вверх
+    // Кнопка вверх с throttle
     const scrollBtn = document.getElementById('scrollTopBtn');
-    window.addEventListener('scroll', () => scrollBtn.classList.toggle('visible', window.scrollY > 300));
+    let scrollTicking = false;
+    window.addEventListener('scroll', () => {
+        if (!scrollTicking) {
+            requestAnimationFrame(() => {
+                scrollBtn.classList.toggle('visible', window.scrollY > 300);
+                scrollTicking = false;
+            });
+            scrollTicking = true;
+        }
+    });
     scrollBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-    // Анимация появления
+    // Анимация появления — упрощённая
+    const revealElements = document.querySelectorAll('.reveal');
     const revealObserver = new IntersectionObserver((entries) => {
-        entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
-    document.querySelectorAll('.reveal').forEach(el => { if(el.getBoundingClientRect().top < window.innerHeight-100) el.classList.add('visible'); });
+        entries.forEach(e => { 
+            if(e.isIntersecting) {
+                e.target.classList.add('visible');
+                revealObserver.unobserve(e.target); // отписываемся после появления
+            }
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+    revealElements.forEach(el => revealObserver.observe(el));
+    // Сразу показываем видимые
+    revealElements.forEach(el => { 
+        if(el.getBoundingClientRect().top < window.innerHeight) el.classList.add('visible'); 
+    });
 
-    // Flip-карточки: клик для мобильных, ховер для десктопа
+    // Flip-карточки: клик для мобильных
     const flipCards = document.querySelectorAll('.flip-card');
     
-    // Всегда добавляем обработчик клика (работает и на мобильных и на десктопе)
     flipCards.forEach(card => {
         card.addEventListener('click', function(e) {
-            // На десктопе ховер уже работает, но клик тоже пусть переключает для надёжности
+            // Предотвращаем двойное срабатывание на десктопе
+            if (!isMobile) return;
+            e.preventDefault();
             this.classList.toggle('flipped');
         });
     });
 
-    // Для десктопа: при уходе мыши сбрасываем flipped, чтобы ховер работал корректно
-    if (window.innerWidth > 768) {
+    // Десктоп: ховер работает через CSS, клик не должен мешать
+    if (!isMobile) {
         flipCards.forEach(card => {
+            card.addEventListener('click', function(e) {
+                // На десктопе клик тоже переключает (для удобства)
+                this.classList.toggle('flipped');
+            });
             card.addEventListener('mouseleave', function() {
-                // Небольшая задержка, чтобы не конфликтовать с кликом
                 setTimeout(() => {
                     if (!card.matches(':hover')) {
                         card.classList.remove('flipped');
                     }
-                }, 100);
+                }, 150);
             });
         });
     }
