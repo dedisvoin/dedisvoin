@@ -377,11 +377,11 @@
             align-items: center;
             gap: 0.8rem;
         }
-        .flip-card-front i { font-size: 3rem; color: var(--color-card-front-icon); }
+        .flip-card-front i { font-size: 3rem; color: var(--color-btn-primary-hover); }
         .flip-card-front h4 {
             font-size: 1.3rem;
             font-weight: 700;
-            background: linear-gradient(135deg, var(--color-card-front-title-1), var(--color-card-front-title-2));
+            background: var(--color-btn-primary-hover);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -394,7 +394,7 @@
             text-align: left;
             justify-content: center;
         }
-        .card-icon { font-size: 2rem; color: var(--color-card-icon); margin-bottom: 1rem; }
+        .card-icon { font-size: 2rem; color: var(--color-btn-primary-hover); margin-bottom: 1rem; }
         .card-label {
             font-size: 0.75rem;
             text-transform: uppercase;
@@ -907,17 +907,13 @@
         <div class="container reveal">
             <div class="hero-wrapper" style="display: flex; align-items: center; gap: 3rem; flex-wrap: wrap;">
                 <div class="hero-content" style="flex: 1; min-width: 280px;">
-                    <h1 style="font-size: 3rem; line-height: 1.2;"><span style="color: var(--h1-color-1);">Lumen</span> <span style="color: var(--h1-color-2);">·</span> <span style="color: var(--h1-color-1);">Скорость C++</span> <br> <span style="color: var(--h1-color-2);">Простота Python</span></h1>
-                    <p style="font-size: 1.2rem; margin: 1.5rem 0; color: var(--hero-text);">Современный компилируемый язык с гибридной типизацией для обучения школьников системному мышлению. Сочетает мощь низкоуровневого кода и чистоту высокоуровневых абстракций.</p>
+                    <h1 style="font-size: 3rem; line-height: 1.2;"><span style="color: var(--h1-color-1);">Lumen</span> <span style="color: var(--h1-color-2);">·</span> <span style="color: var(--h1-color-1);">Мощность C++</span> <br> <span style="color: var(--h1-color-2);">Простота Python</span></h1>
+                    <p style="font-size: 1.2rem; margin: 1.5rem 0; color: var(--hero-text);">Современный интерпретируемый язык с гибридной типизацией для обучения школьников системному мышлению. Сочетает мощь низкоуровневого кода и чистоту высокоуровневых абстракций.</p>
                     <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
                         <a href="#download" class="btn btn-primary"><i class="fas fa-download"></i> Скачать Lumen IDE</a>
-                        <a href="#" class="btn btn-outline"><i class="fas fa-book"></i> Документация</a>
+                       
                     </div>
-                    <div class="hero-stats" style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2rem;">
-                        <span class="stat-badge"><i class="fas fa-bolt"></i> Компилируемый</span>
-                        <span class="stat-badge"><i class="fas fa-adjust"></i> Гибридная типизация</span>
-                        <span class="stat-badge"><i class="fas fa-brain"></i> Умные указатели</span>
-                    </div>
+                    
                 </div>
                 <div class="hero-image" style="flex: 1; min-width: 300px;">
                     <div class="custom-image-container" style="border-radius: 1rem; overflow: hidden; box-shadow: var(--shadow-md); background: rgba(0,0,0,0.2);">
@@ -1129,7 +1125,7 @@ n = <span class="number">0</span>;
             <div class="download-card">
                 <i class="fab fa-windows" style="font-size: 2.5rem; color: var(--download-icon-color);"></i>
                 <h3 style="margin: 0.5rem 0;">Lumen IDE для Windows 64-bit</h3>
-                <p style="margin-bottom: 0.5rem; color: var(--download-text);">Версия 1.05b — первая стабильная сборка</p>
+                <p style="margin-bottom: 0.5rem; color: var(--download-text);">Версия 0.18r — первая стабильная сборка</p>
                 <div class="platform-note"><i class="fas fa-check-circle"></i> Поддерживаемая платформа: Windows 10/11 (64-bit)</div>
                 <div style="margin: 1.5rem 0;">
                     <button id="windowsDownloadBtn" class="big-download-btn"><i class="fas fa-download"></i> Скачать Lumen IDE для Windows 64-bit</button>
@@ -1145,9 +1141,7 @@ n = <span class="number">0</span>;
         
         <!-- Заголовок секции -->
         <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.8rem; margin-bottom: 1rem;">
-            <h2><i class="fas fa-lightbulb"></i> Lumen IDE</h2>
-            <span class="windows-only"><i class="fab fa-windows"></i> Windows 64-bit</span>
-            <span class="hybrid-badge"><i class="fas fa-code"></i> Гибридная типизация</span>
+            <h1><i class="fas fa-lightbulb"></i> Lumen IDE</h2>
         </div>
         
         <!-- Двухколоночная раскладка: контент + изображение -->
@@ -1177,6 +1171,44 @@ n = <span class="number">0</span>;
                     <span class="badge-tech"><i class="fab fa-windows"></i> Windows 64-bit Only</span>
                     <span class="badge-tech"><i class="fas fa-adjust"></i> Гибридная типизация</span>
                 </div>
+                <!-- Поддержка языков интерфейса -->
+<div class="language-support" style="
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--color-badge-bg);
+    border: 1px solid var(--color-badge-border);
+    border-radius: 30px;
+    margin-bottom: 2rem;
+    font-size: 0.85rem;
+">
+
+    <span style="color: var(--color-base-text); font-weight: 500;">Языки интерфейса:</span>
+    <div style="display: flex; gap: 0.3rem;">
+        <span style="
+            padding: 0.2rem 0.6rem;
+            background: var(--color-badge-bg);
+            color: var(--color-base-text);
+            border: 1px solid var(--color-badge-border);
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        ">RU</span>
+        <span style="
+            padding: 0.2rem 0.6rem;
+            background: var(--color-badge-bg);
+            color: var(--color-base-text);
+            border: 1px solid var(--color-badge-border);
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        ">EN</span>
+    </div>
+    <span style="color: var(--color-base-text-muted); font-size: 0.75rem; margin-left: 0.5rem;">
+        <i class="fas fa-sync-alt"></i> Переключение в настройках
+    </span>
+</div>
                 
             
                 
@@ -1345,9 +1377,24 @@ n = <span class="number">0</span>;
         });
     });
 
-    document.getElementById('windowsDownloadBtn')?.addEventListener('click', () => {
-        alert("Скачивание Lumen IDE v1.05b для Windows 64-bit\nРазмер: ~85 MB\nУстановщик готов к запуску.");
-    });
+    document.getElementById('windowsDownloadBtn')?.addEventListener('click', (e) => {
+    // Предотвращаем стандартное поведение если нужно
+    e?.preventDefault();
+    
+    // 🔹 ССЫЛКА НА СКАЧИВАНИЕ — замените на вашу
+    const downloadUrl = 'https://raw.githubusercontent.com/dedisvoin/TwistLang-main/main/Lumen%200.18r-installer.exe';
+    // Создаём временную ссылку для надёжного скачивания
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = 'LumenIDE_0.18r_Win64.exe';
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    // 📊 Опционально: аналитика
+    console.log('Download started:', downloadUrl);
+});
 
     const scrollBtn = document.getElementById('scrollTopBtn');
     let scrollTicking = false;
